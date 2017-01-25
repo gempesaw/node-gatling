@@ -1,13 +1,13 @@
 {
-  "name": "@nib/npm-gatling",
+  "name": "npm-gatling",
   "version": "2.0.0",
-  "description": "npm wrapper around the gatling binaries.",
+  "description": "npm wrapper around the gatling binaries",
   "bin": {
     "gatling": "./index.js"
   },
   "author": "Matthew Turner",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nib-health-funds/npm-gatling.git"
+    "url": "https://github.com/gempesaw/npm-gatling.git"
   }
 }
