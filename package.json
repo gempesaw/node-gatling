@@ -14,7 +14,7 @@
     "url": "https://github.com/gempesaw/npm-gatling.git"
   },
   "publishConfig": {
-    "registry": "http://artifactory.be.sharecare.com/api/npm/NPM-local"
+    "registry": "https://artifactory.be.sharecare.com/api/npm/NPM-local"
   },
   "license": "MIT",
   "devDependencies": {
