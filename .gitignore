@@ -1,3 +1,4 @@
 *.class
 node_modules/*
-src/lib/target/zincCache
+src/lib/target
+src/lib/results
