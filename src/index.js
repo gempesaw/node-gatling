@@ -1,8 +1,13 @@
 'use strict';
 
 const fs = require('fs');
-const spawn = require('child_process').spawn;
+const cp = require('child_process');
 const path = require('path');
+
+const isWin = () => process.platform === 'win32';
+const getGatlingBinary = (gatlingBinDir) => isWin()
+              ? 'gatling.bat'
+              : path.join(gatlingBinDir, 'gatling.sh');
 
 module.exports = {
     constructCommand(originalDir) {
@@ -11,16 +16,10 @@ module.exports = {
         const gatlingBinDir = path.join(__dirname, 'lib', 'bin');
         process.chdir(gatlingBinDir);
 
-        process.env['NO_PAUSE'] = true;
-
         const argv = process.argv || [];
         const args = this.addAbsolutePaths(argv.slice(2), originalDir);
 
-        const executable = process.platform === 'win32'
-              ? 'gatling.bat'
-              : path.join(gatlingBinDir, 'gatling.sh');
-
-        return [ executable, args ];
+        return [ getGatlingBinary(gatlingBinDir), args ];
     },
 
     addAbsolutePaths(args, originalDir) {
@@ -40,8 +39,8 @@ module.exports = {
         });
     },
 
-    runGatling(executable, args) {
-        const child = spawn(executable, args);
+    spawn(executable, args, opts) {
+        const child = cp.spawn(executable, args, opts);
 
         process.on('exit', function() {
             child.kill();
@@ -54,5 +53,40 @@ module.exports = {
         child.stderr.on('data', function(chunk){
             console.log(chunk.toString());
         });
+
+        return child;
+    },
+
+    getClassPath(args, originalDir) {
+        const stringArgs = args.join(' ');
+
+        const simulationFolder = /(?:-sf|--simulations-folder)\s+([^ ]+)/;
+        const matches = stringArgs.match(simulationFolder);
+
+        if (matches && matches[1] && fs.existsSync(matches[1])) {
+            return matches[1];
+        }
+        else {
+            return '';
+        }
+    },
+
+    runGatling(originalDir) {
+        const ret = this.constructCommand(originalDir);
+        const executable = ret[0];
+        const args = ret[1];
+
+        const env = JSON.parse(JSON.stringify(process.env));
+        if (isWin()) {
+            env['NO_PAUSE'] = true;
+        }
+
+        const cp = this.getClassPath(args, originalDir);
+        if (cp) {
+            const oldClassPath = process.env['JAVA_CLASSPATH'] || '';
+            env['JAVA_CLASSPATH'] = `${cp}:${oldClassPath}`;
+        }
+
+        return this.spawn(executable, args, { env });
     }
 };

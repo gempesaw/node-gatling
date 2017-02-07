@@ -13,7 +13,7 @@ may want to review before updating.
 Install `node-gatling` and then use `gatling` like
 
 ```
-gatling -s SimulationName -rf results/
+gatling -sf test/load -s SimulationName -rf results/
 ```
 
 See [the gatling docs][] for a list of all the command line arguments.

@@ -1,6 +1,6 @@
 {
   "name": "node-gatling",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "npm wrapper around the gatling binaries",
   "bin": {
     "gatling": "./index.js"
@@ -19,6 +19,7 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "testdouble": "^1.11.1"
   }
 }
